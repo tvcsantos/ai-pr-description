@@ -8,6 +8,7 @@ concurrency:
 
 jobs:
   ai-pr-description:
+    name: AI PR Description
     runs-on: ubuntu-latest
 
     steps:
