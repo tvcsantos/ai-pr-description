@@ -1,60 +1,88 @@
 name: 'Autofill PR Description with OpenAI'
-description: "Autofill you pull request with a high quality description by harvesting the power of OpenAI and ChatGPT"
+description:
+  'Autofill you pull request with a high quality description by harvesting the
+  power of OpenAI and ChatGPT'
 inputs:
-  github_token:
+  github-token:
     description: 'The GitHub token'
     required: true
-  openai_api_key:
+  openai-api-key:
     description: 'OpenAI API key'
     required: true
-  pull_request_id:
-    description: 'Pull request id (otherwise attempt to extract it from the GitHub metadata)'
+  provider:
+    description: 'AI provider to use: openai or azure-openai'
+    required: true
+  pull-request-id:
+    description:
+      'Pull request id (otherwise attempt to extract it from the GitHub
+      metadata)'
     required: false
     default: ''
-  allowed_users:
-    description: 'Comma-separated list of GitHub usernames this action will run for, if empty it will run for all users'
+  allowed-users:
+    description:
+      'Comma-separated list of GitHub usernames this action will run for, if
+      empty it will run for all users'
     required: false
     default: ''
-  openai_model:
-    description: 'OpenAI model to use, needs to be compatible with the chat/completions endpoint'
-    required: false
-    default: 'gpt-4o-mini'
-  max_tokens:
-    description: 'Maximum number of prompt tokens to use'
+  openai-model:
+    description:
+      'OpenAI model to use, needs to be compatible with the chat/completions
+      endpoint'
+    required: true
+  max-tokens:
+    description: 'Maximum number of tokens to generate'
     required: false
     default: '1000'
   temperature:
-    description: 'Temperature for the model, higher values will make the model more creative, lower values will make it more conservative'
+    description:
+      'Temperature for the model, higher values will make the model more
+      creative, lower values will make it more conservative'
     required: false
     default: '0.6'
-  sample_prompt:
-    description: 'Sample prompt to use for the model, refer to SAMPLE_PROMPT in the Python file.'
+  sample-prompt:
+    description: 'Sample prompt to use for the model'
     required: false
     default: ''
-  sample_response:
+  sample-response:
     description: 'A sample of an ideal response based on the sample prompt'
     required: false
     default: ''
-  completion_prompt:
-    description: 'Prompt to use as the final prompt to the model, refer to COMPLETION_PROMPT in the Python file.'
+  completion-prompt:
+    description: 'Prompt to use as the final prompt to the model'
     required: false
     default: ''
-  overwrite_description:
-    description: 'Overwrite the PR description if it already exists. This also means that the action will run on every PR update'
+  overwrite-description:
+    description:
+      'Overwrite the PR description if it already exists. This also means that
+      the action will run on every PR update. Only applies to description output
+      mode.'
     required: false
     default: 'false'
-  azure_endpoint:
-    description: 'Azure endpoint for OpenAI, if you are using Azure. Setting this will make the action use Azure OpenAI.'
+  output-mode:
+    description:
+      'Where to publish the generated description: description or comment.
+      Comment mode preserves the existing PR description.'
+    required: false
+    default: 'description'
+  comment-mode:
+    description:
+      'Comment behavior: update reuses the existing action comment; create posts
+      a new comment on each run. Only applies when output-mode is comment.'
+    required: false
+    default: 'update'
+  azure-endpoint:
+    description:
+      'Azure OpenAI endpoint, required when provider is azure-openai.'
     required: false
     default: ''
-  azure_openai_api_version:
+  azure-openai-api-version:
     description: 'OpenAI API version, if you are using Azure.'
     required: false
     default: ''
 
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
+  using: 'node24'
+  main: 'dist/index.js'
 branding:
   icon: 'cpu'
   color: 'green'

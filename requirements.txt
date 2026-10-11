@@ -1,2 +1,0 @@
-requests>=2.18
-openai==1.99.2

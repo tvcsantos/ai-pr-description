@@ -1,90 +1,130 @@
-# `platisd/openai-pr-description` GitHub Action
+# AI PR Description GitHub Action
 
-Autofill the description of your pull requests with the power of OpenAI!
+Autofill the description of your pull requests with the power of AI!
 
-![openai-pr-description-screenshot](media/openai-pr-description-screenshot.png)
+## Spend less time writing PR descriptions
 
-## What does it do?
+PR descriptions are easy to leave until last, then rush—or skip. This action
+turns a pull request's title and changes into a useful first draft. Reviewers
+get context on the purpose of the change before they dive into the diff.
 
-`platisd/openai-pr-description` is a GitHub Action that looks at the title as well as the contents
-of your pull request and uses the [OpenAI API](https://openai.com/blog/openai-api) to automatically
-fill up the description of your pull request. Just like ChatGPT would! 🎉<br>
-The Action tries to focus on **why** the changes are needed rather on **what** they are,
-like any proper pull request description should.
+It focuses on why the change matters, not just what files changed. It fills in
+only an empty description by default, so authors keep control. You can also
+choose to overwrite an existing description or publish the draft as a comment.
 
-The GitHub Action will (by default) only run when a PR description is not already provided.
-In other words it will not accidentally overwrite your existing description,
-unless you opt-in to do so by setting the `overwrite_description` input to `true`.
-The idea is this Action will save you the time and trouble of writing **meaningful** pull request descriptions.<br>
-You can customize it in different ways. One of them allows the Action to only run on pull requests started
-by specific users, e.g. the main maintainers of the repository.
-Keep in mind the OpenAI API is not free to use. That being said, so far it's been rather cheap,
-i.e. around ~$0.10 for 15-20 pull requests so far.
+## Usage
 
-## How can you use it?
+### Generate a PR description
 
-1. Create an account on OpenAI, set up a payment method and get your [OpenAI API key].
-2. Add the OpenAI API key as a [secret] in your repository's settings.
-3. Create a workflow YAML file, e.g. `.github/workflows/openai-pr-description.yml` with the following contents:
+1. Add your API key as a [repository secret][repository-secret].
+2. Add the action to a pull request workflow:
+
+   ```yaml
+   name: Autofill PR description
+
+   on: pull_request
+
+   concurrency:
+     group:
+       ai-pr-description-${{ github.event.pull_request.number || github.ref }}
+     cancel-in-progress: false
+
+   jobs:
+     ai-pr-description:
+       runs-on: ubuntu-latest
+
+       steps:
+         - uses: tvcsantos/ai-pr-description@main
+           with:
+             github-token: ${{ secrets.GITHUB_TOKEN }}
+             provider: openai
+             openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+             openai-model: ${{ vars.OPENAI_MODEL }}
+   ```
+
+### Configure the provider
+
+| Input                      | Required | Notes                               |
+| -------------------------- | -------- | ----------------------------------- |
+| `github-token`             | Yes      | GitHub token                        |
+| `provider`                 | Yes      | `openai` or `azure-openai`          |
+| `openai-api-key`           | Yes      | Used with either provider           |
+| `openai-model`             | Yes      | Model name or Azure deployment name |
+| `azure-endpoint`           | Azure    | Required when using `azure-openai`  |
+| `azure-openai-api-version` | Azure    | Required when using `azure-openai`  |
+
+### Customize generation
+
+| Input                   | Description                        | Default                      |
+| ----------------------- | ---------------------------------- | ---------------------------- |
+| `pull-request-id`       | Pull request ID                    | Detected from event metadata |
+| `max-tokens`            | Maximum generated tokens           | `1000`                       |
+| `temperature`           | Creativity level (`0` to `2`)      | `0.6`                        |
+| `sample-prompt`         | Context prompt                     | `SAMPLE_PROMPT`              |
+| `sample-response`       | Example response                   | `GOOD_SAMPLE_RESPONSE`       |
+| `completion-prompt`     | Description-generation prompt      | `COMPLETION_PROMPT`          |
+| `overwrite-description` | Replace an existing PR description | `false`                      |
+
+### Publish as a comment
+
+Set `output-mode` to `comment` to leave the PR description unchanged:
 
 ```yaml
-name: Autofill PR description
-
-on: pull_request
-
-jobs:
-  openai-pr-description:
-    runs-on: ubuntu-22.04
-
-    steps:
-      - uses: platisd/openai-pr-description@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+- uses: tvcsantos/ai-pr-description@main
+  with:
+    github-token: ${{ secrets.GITHUB_TOKEN }}
+    provider: openai
+    openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+    openai-model: ${{ vars.OPENAI_MODEL }}
+    output-mode: comment
 ```
 
-| Input                      | Description                                                    | Required | Default                    |
-| -------------------------- | -------------------------------------------------------------- | -------- | -------------------------- |
-| `github_token`             | The GitHub token to use for the Action                         | Yes      |                            |
-| `openai_api_key`           | The [OpenAI API key] to use, keep it hidden                    | Yes      |                            |
-| `pull_request_id`          | The ID of the pull request to use                              | No       | Extracted from metadata    |
-| `openai_model`             | The [OpenAI model] to use                                      | No       | `gpt-4o-mini`              |
-| `max_tokens`               | The maximum number of **prompt tokens** to use                 | No       | `1000`                     |
-| `temperature`              | Higher values will make the model more creative (0-2)          | No       | `0.6`                      |
-| `sample_prompt`            | The prompt to use for giving context to the model              | No       | See `SAMPLE_PROMPT`        |
-| `sample_response`          | A sample response for giving context to the model              | No       | See `GOOD_SAMPLE_RESPONSE` |
-| `completion_prompt`        | The prompt to use for the model to generate the PR description | No       | See `COMPLETION_PROMPT`    |
-| `overwrite_description`    | Whether to overwrite the PR description if it already exists   | No       | `false`                    |
-| `azure_endpoint`           | The OpenAI API Azure endpoint if you use one                   | No       |                            |
-| `azure_openai_api_version` | The OpenAI API version to use if you use Azure                 | No       |                            |
+**Update existing comment:**
 
-[OpenAI API key]: https://help.openai.com/en/articles/4936850-where-do-i-find-my-secret-api-key
-[OpenAI model]: https://platform.openai.com/docs/models
-[secret]: https://docs.github.com/en/actions/security-guides/encrypted-secrets
+Set `comment-mode` to `update` to edit the action's existing comment. This
+requires `pull-requests: write`, the same token identity across runs, and a
+shared `concurrency` group across workflows publishing to the same PR.
 
+**Create a new comment:**
 
-## Demo
+Set `comment-mode` to `create` to post a new comment each run.
 
-* [platisd/smartcar_shield/pull/70](https://github.com/platisd/smartcar_shield/pull/70)
-  * The GitHub Action explained why it is useful to add itself to a repository. 🤯
+## Development
 
-![openai-pr-description-screenshot](media/openai-pr-description-screenshot.png)
+Install dependencies:
 
-* [platisd/cpp-command-parser/pull/16](https://github.com/platisd/cpp-command-parser/pull/16)
-  * A decent explanation on why fetching `GoogleTest` during the `cmake` build instead of
-  version controlling it, is a good idea. 🎯
+```sh
+npm ci
+```
 
-![cpp-command-parser-screenshot](media/cpp-command-parser-screenshot.png)
+Run tests and type-check:
 
-* [platisd/clang-tidy-pr-comments/pull/43](https://github.com/platisd/clang-tidy-pr-comments/pull/43)
-  * I would improve it a bit, some parts are a bit off, but with small modifications it'd better
-  than the PR description I originally had. 😅
+```sh
+npm test
+npm run typecheck
+```
 
-![clang-tidy-pr-comments-screenshot](media/clang-tidy-pr-comments-screenshot.png)
+Build the action bundle:
 
-### `403` error when updating the PR description
+```sh
+npm run bundle
+```
 
-If you get a `403` error when trying to update the PR description, it's most likely because
-the GitHub Action is not allowed to do so.
-The easiest way forward is to grant the necessary permissions to the `GITHUB_TOKEN` secret
-at `<your_repo_url>/settings/actions` under `Workflow permissions`.
+## Troubleshooting
+
+<!-- markdownlint-disable MD033 -->
+
+<details>
+<summary><code>403</code> error when updating the PR description</summary>
+
+If you get a `403` error when trying to update the PR description, it's most
+likely because the GitHub Action is not allowed to do so. The easiest way
+forward is to grant the necessary permissions to the `GITHUB_TOKEN` secret at
+`<your_repo_url>/settings/actions` under `Workflow permissions`.
+
+</details>
+
+<!-- markdownlint-enable MD033 -->
+
+[repository-secret]:
+  https://docs.github.com/en/actions/security-guides/encrypted-secrets

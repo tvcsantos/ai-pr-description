@@ -1,0 +1,39 @@
+{
+  "name": "ai-pr-description",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A GitHub Action that uses OpenAI to generate pull request descriptions.",
+  "scripts": {
+    "bundle": "npm run format:write && npm run package",
+    "format:write": "prettier --write src __tests__ jest.config.js rollup.config.ts tsconfig.json tsconfig.test.json action.yml package.json",
+    "format:check": "prettier --check src __tests__ jest.config.js rollup.config.ts tsconfig.json tsconfig.test.json action.yml package.json",
+    "package": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
+    "typecheck": "tsc --noEmit && tsc --project tsconfig.test.json",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
+  },
+  "dependencies": {
+    "@actions/core": "^3.0.0",
+    "@actions/github": "^9.1.1",
+    "openai": "^4.0.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@jest/globals": "^30.2.0",
+    "@rollup/plugin-commonjs": "^29.0.0",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-typescript": "^12.3.0",
+    "@types/node": "^24.0.0",
+    "prettier": "^3.8.1",
+    "jest": "^30.2.0",
+    "ts-jest": "^29.4.6",
+    "ts-jest-resolver": "^2.0.1",
+    "rollup": "^4.57.1",
+    "tslib": "^2.8.1",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "license": "MIT"
+}
