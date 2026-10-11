@@ -126,5 +126,22 @@ forward is to grant the necessary permissions to the `GITHUB_TOKEN` secret at
 
 <!-- markdownlint-enable MD033 -->
 
+## Contributing
+
+Contributions are welcome. Please read the [contribution guide](CONTRIBUTING.md)
+and follow the [Code of Conduct](CODE_OF_CONDUCT.md).
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+## Project origins
+
+This project started as a fork of Dimitris Platis's
+[`platisd/openai-pr-description`][openai-pr-description] and has since been
+substantially adapted. It is maintained independently and may differ from the
+original project.
+
 [repository-secret]:
   https://docs.github.com/en/actions/security-guides/encrypted-secrets
+[openai-pr-description]: https://github.com/platisd/openai-pr-description
