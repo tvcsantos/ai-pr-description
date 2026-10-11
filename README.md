@@ -115,12 +115,21 @@ npm run bundle
 <!-- markdownlint-disable MD033 -->
 
 <details>
-<summary><code>403</code> error when updating the PR description</summary>
+<summary>Permission denied when updating the PR description (403)</summary>
 
-If you get a `403` error when trying to update the PR description, it's most
-likely because the GitHub Action is not allowed to do so. The easiest way
-forward is to grant the necessary permissions to the `GITHUB_TOKEN` secret at
-`<your_repo_url>/settings/actions` under `Workflow permissions`.
+A `403` error usually means the token cannot write to the pull request. When
+using `GITHUB_TOKEN`, grant permission in your workflow:
+
+```yaml
+permissions:
+  contents: read
+  pull-requests: write
+```
+
+If the error persists, check **Settings > Actions > General > Workflow
+permissions** for repository or organization restrictions. Workflows triggered
+by pull requests from forks typically receive a read-only `GITHUB_TOKEN`, so
+this setting alone may not resolve the error.
 
 </details>
 
