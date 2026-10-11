@@ -1,7 +1,7 @@
 name: 'Autofill PR Description with OpenAI'
 description:
   'Autofill you pull request with a high quality description by harvesting the
-  power of OpenAI and ChatGPT'
+  power of AI'
 inputs:
   github-token:
     description: 'The GitHub token'
