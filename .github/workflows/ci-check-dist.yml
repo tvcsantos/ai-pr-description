@@ -38,6 +38,8 @@ jobs:
           dry-run: true
           push-changes: false
           create-tags: false
+          generate-release-notes: false
+          generate-changelog: false
 
       - name: Install dependencies
         run: npm ci
