@@ -44117,8 +44117,8 @@ class AzureOpenAIProvider {
 
 class OpenAIProvider {
     client;
-    constructor(apiKey) {
-        this.client = new OpenAI({ apiKey });
+    constructor(apiKey, baseURL) {
+        this.client = new OpenAI({ apiKey, baseURL });
     }
     async generateChatCompletion(request) {
         const response = await this.client.chat.completions.create({
@@ -44133,7 +44133,8 @@ class OpenAIProvider {
 
 const openAIProviderConfigurationSchema = object({
     provider: literal('openai'),
-    apiKey: string().min(1)
+    apiKey: string().min(1),
+    baseURL: url().optional()
 });
 const azureOpenAIProviderConfigurationSchema = object({
     provider: literal('azure-openai'),
@@ -44148,7 +44149,7 @@ const aiProviderConfigurationSchema = discriminatedUnion('provider', [
 function createAIProvider(configuration) {
     switch (configuration.provider) {
         case 'openai':
-            return new OpenAIProvider(configuration.apiKey);
+            return new OpenAIProvider(configuration.apiKey, configuration.baseURL);
         case 'azure-openai':
             return new AzureOpenAIProvider(configuration.apiKey, configuration.endpoint, configuration.apiVersion);
     }
@@ -44170,6 +44171,7 @@ const inputsSchema = object({
     aiProviderConfiguration: aiProviderConfigurationSchema,
     githubToken: string().min(1),
     openAIApiKey: string().min(1),
+    openAIBaseURL: url().optional(),
     provider: _enum(['openai', 'azure-openai']),
     pullRequestId: positiveIntegerSchema('pull-request-id').optional(),
     allowedUsers: array(string()),
@@ -44197,6 +44199,9 @@ function getGithubToken() {
 }
 function getOpenAIApiKey() {
     return getInput('openai-api-key', { required: true });
+}
+function getOpenAIBaseURL() {
+    return getInput('openai-base-url') || undefined;
 }
 function getProvider() {
     return getInput('provider', { required: true });
@@ -44251,6 +44256,7 @@ function getInputs() {
     const inputs = {
         githubToken: getGithubToken(),
         openAIApiKey: getOpenAIApiKey(),
+        openAIBaseURL: getOpenAIBaseURL(),
         provider: getProvider(),
         pullRequestId: getPullRequestId(),
         allowedUsers: getAllowedUsers(),
@@ -44271,6 +44277,7 @@ function getInputs() {
         aiProviderConfiguration: {
             provider: inputs.provider,
             apiKey: inputs.openAIApiKey,
+            baseURL: inputs.openAIBaseURL,
             endpoint: inputs.azureEndpoint,
             apiVersion: inputs.azureOpenAIApiVersion
         }

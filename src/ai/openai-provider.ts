@@ -4,8 +4,8 @@ import type { AIProvider, ChatCompletionRequest } from './provider.js'
 export class OpenAIProvider implements AIProvider {
   private readonly client: OpenAI
 
-  constructor(apiKey: string) {
-    this.client = new OpenAI({ apiKey })
+  constructor(apiKey: string, baseURL?: string) {
+    this.client = new OpenAI({ apiKey, baseURL })
   }
 
   async generateChatCompletion(

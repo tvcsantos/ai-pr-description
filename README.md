@@ -12,6 +12,23 @@ It focuses on why the change matters, not just what files changed. It fills in
 only an empty description by default, so authors keep control. You can also
 choose to overwrite an existing description or publish the draft as a comment.
 
+### Automate PR descriptions on your terms
+
+Want more control than GitHub Copilot's built-in PR summaries? Run description
+generation as your own GitHub Actions workflow. Choose the AI service, tailor
+the writing to your team's conventions, and control how the result is
+published:
+
+- **Run it your way:** Trigger generation on pull request events and control
+  who it runs for with your existing Actions workflow.
+- **Choose the AI service:** Use OpenAI, Azure OpenAI, or another
+  OpenAI-compatible Chat Completions API, including a custom base URL.
+- **Match your review process:** Set team-specific prompts and examples, then
+  fill an empty description, explicitly overwrite it, or publish a comment.
+
+You manage the provider credentials and pay any usage charges directly to your
+AI provider.
+
 ## Usage
 
 ### Generate a PR description
@@ -50,6 +67,7 @@ choose to overwrite an existing description or publish the draft as a comment.
 | `provider`                 | Yes      | `openai` or `azure-openai`          |
 | `openai-api-key`           | Yes      | Used with either provider           |
 | `openai-model`             | Yes      | Model name or Azure deployment name |
+| `openai-base-url`          | No       | Compatible API URL when using `openai` |
 | `azure-endpoint`           | Azure    | Required when using `azure-openai`  |
 | `azure-openai-api-version` | Azure    | Required when using `azure-openai`  |
 

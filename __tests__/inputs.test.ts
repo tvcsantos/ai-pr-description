@@ -17,6 +17,7 @@ describe('inputs', () => {
     values = {
       'github-token': 'github-key',
       'openai-api-key': 'ai-key',
+      'openai-base-url': '',
       'openai-model': 'chosen-model',
       provider: 'openai'
     }
@@ -24,9 +25,14 @@ describe('inputs', () => {
 
   it('reads every input and applies defaults', () => {
     expect(getInputs()).toEqual({
-      aiProviderConfiguration: { provider: 'openai', apiKey: 'ai-key' },
+      aiProviderConfiguration: {
+        provider: 'openai',
+        apiKey: 'ai-key',
+        baseURL: undefined
+      },
       githubToken: 'github-key',
       openAIApiKey: 'ai-key',
+      openAIBaseURL: undefined,
       provider: 'openai',
       pullRequestId: undefined,
       allowedUsers: [],
@@ -81,6 +87,18 @@ describe('inputs', () => {
     })
   })
 
+  it('passes the optional OpenAI base URL to provider configuration', () => {
+    values['openai-base-url'] = 'https://api.example.com/v1'
+    expect(getInputs()).toMatchObject({
+      openAIBaseURL: 'https://api.example.com/v1',
+      aiProviderConfiguration: {
+        provider: 'openai',
+        apiKey: 'ai-key',
+        baseURL: 'https://api.example.com/v1'
+      }
+    })
+  })
+
   it.each(['github-token', 'openai-api-key', 'openai-model', 'provider'])(
     'requires %s',
     (name) => {
@@ -132,6 +150,11 @@ describe('inputs', () => {
   it('accepts comment output mode', () => {
     values['output-mode'] = 'comment'
     expect(getInputs().outputMode).toBe('comment')
+  })
+
+  it('rejects an invalid OpenAI base URL', () => {
+    values['openai-base-url'] = 'not-a-url'
+    expect(() => getInputs()).toThrow()
   })
 
   it('rejects unsupported output modes', () => {

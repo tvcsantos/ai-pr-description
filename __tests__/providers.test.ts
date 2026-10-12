@@ -11,7 +11,10 @@ const create =
       temperature: number
     }) => Promise<Response>
   >()
-const OpenAI = jest.fn(function (options: { apiKey: string }) {
+const OpenAI = jest.fn(function (options: {
+  apiKey: string
+  baseURL?: string
+}) {
   return { chat: { completions: { create } } }
 })
 const AzureOpenAI = jest.fn(function (options: {
@@ -49,7 +52,10 @@ describe('AI providers', () => {
         apiVersion: 'version'
       })
     )
-    expect(OpenAI).toHaveBeenCalledWith({ apiKey: 'key' })
+    expect(OpenAI).toHaveBeenCalledWith({
+      apiKey: 'key',
+      baseURL: undefined
+    })
     expect(AzureOpenAI).not.toHaveBeenCalled()
   })
 
@@ -71,13 +77,17 @@ describe('AI providers', () => {
   it('uses an already parsed configuration without parsing again', () => {
     const configuration = aiProviderConfigurationSchema.parse({
       provider: 'openai',
-      apiKey: 'key'
+      apiKey: 'key',
+      baseURL: 'https://api.example.com/v1'
     })
     const parse = jest.spyOn(aiProviderConfigurationSchema, 'parse')
     try {
       createAIProvider(configuration)
       expect(parse).not.toHaveBeenCalled()
-      expect(OpenAI).toHaveBeenCalledWith({ apiKey: 'key' })
+      expect(OpenAI).toHaveBeenCalledWith({
+        apiKey: 'key',
+        baseURL: 'https://api.example.com/v1'
+      })
     } finally {
       parse.mockRestore()
     }

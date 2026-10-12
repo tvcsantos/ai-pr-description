@@ -16,6 +16,7 @@ const inputsSchema = z.object({
   aiProviderConfiguration: aiProviderConfigurationSchema,
   githubToken: z.string().min(1),
   openAIApiKey: z.string().min(1),
+  openAIBaseURL: z.url().optional(),
   provider: z.enum(['openai', 'azure-openai']),
   pullRequestId: positiveIntegerSchema('pull-request-id').optional(),
   allowedUsers: z.array(z.string()),
@@ -49,6 +50,10 @@ function getGithubToken(): string {
 
 function getOpenAIApiKey(): string {
   return core.getInput('openai-api-key', { required: true })
+}
+
+function getOpenAIBaseURL(): string | undefined {
+  return core.getInput('openai-base-url') || undefined
 }
 
 function getProvider(): string {
@@ -119,6 +124,7 @@ export function getInputs(): Inputs {
   const inputs = {
     githubToken: getGithubToken(),
     openAIApiKey: getOpenAIApiKey(),
+    openAIBaseURL: getOpenAIBaseURL(),
     provider: getProvider(),
     pullRequestId: getPullRequestId(),
     allowedUsers: getAllowedUsers(),
@@ -140,6 +146,7 @@ export function getInputs(): Inputs {
     aiProviderConfiguration: {
       provider: inputs.provider,
       apiKey: inputs.openAIApiKey,
+      baseURL: inputs.openAIBaseURL,
       endpoint: inputs.azureEndpoint,
       apiVersion: inputs.azureOpenAIApiVersion
     }

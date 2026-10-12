@@ -5,7 +5,8 @@ import type { AIProvider } from './provider.js'
 
 const openAIProviderConfigurationSchema = z.object({
   provider: z.literal('openai'),
-  apiKey: z.string().min(1)
+  apiKey: z.string().min(1),
+  baseURL: z.url().optional()
 })
 
 const azureOpenAIProviderConfigurationSchema = z.object({
@@ -29,7 +30,7 @@ export function createAIProvider(
 ): AIProvider {
   switch (configuration.provider) {
     case 'openai':
-      return new OpenAIProvider(configuration.apiKey)
+      return new OpenAIProvider(configuration.apiKey, configuration.baseURL)
     case 'azure-openai':
       return new AzureOpenAIProvider(
         configuration.apiKey,
