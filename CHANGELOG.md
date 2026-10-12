@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Next Version Placeholder -->
 
+## [1.1.2](https://github.com/tvcsantos/ai-pr-description/compare/v1.1.1...v1.1.2) - 2026-10-12
+
+### 🔁 CI
+
+- Pin versu plugin node ([#1](https://github.com/tvcsantos/ai-pr-description/issues/1)) ([6fc961c](https://github.com/tvcsantos/ai-pr-description/commit/6fc961c9ea213bb119b7757de58f4b06eab043b2))
+
 ## [1.1.1](https://github.com/tvcsantos/ai-pr-description/compare/v1.1.0...v1.1.1) - 2026-10-12
 
 ### 📝 Documentation
