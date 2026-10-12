@@ -51,7 +51,7 @@ AI provider.
        runs-on: ubuntu-latest
 
        steps:
-         - uses: tvcsantos/ai-pr-description@main
+         - uses: tvcsantos/ai-pr-description@v1
            with:
              github-token: ${{ secrets.GITHUB_TOKEN }}
              provider: openai
@@ -88,7 +88,7 @@ AI provider.
 Set `output-mode` to `comment` to leave the PR description unchanged:
 
 ```yaml
-- uses: tvcsantos/ai-pr-description@main
+- uses: tvcsantos/ai-pr-description@v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     provider: openai
