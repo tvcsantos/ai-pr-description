@@ -18,12 +18,26 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v7
         with:
           node-version-file: .node-version
           cache: npm
+
+      - name: Install Versu Node Plugin
+        run: npm install --global @versu/plugin-node
+
+      - name: Preview next release
+        uses: versuhq/versu@v3
+        with:
+          strip-module-prefix: true
+          tag-version-prefix: v
+          dry-run: true
+          push-changes: false
+          create-tags: false
 
       - name: Install dependencies
         run: npm ci
