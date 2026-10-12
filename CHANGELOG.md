@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Next Version Placeholder -->
 
+## [1.1.3](https://github.com/tvcsantos/ai-pr-description/compare/v1.1.2...v1.1.3) - 2026-10-12
+
+### 🔁 CI
+
+- Delete self pr pipeline ([ed4035d](https://github.com/tvcsantos/ai-pr-description/commit/ed4035d499d8d1fa09105d8eaf45f9b01af906e7))
+
 ## [1.1.2](https://github.com/tvcsantos/ai-pr-description/compare/v1.1.1...v1.1.2) - 2026-10-12
 
 ### 🔁 CI
