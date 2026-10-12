@@ -74,13 +74,17 @@ jobs:
 
             for (const { moduleId, tag } of createdTags) {
               const notes = notesPaths.find((entry) => entry.moduleId === moduleId);
+              if (!notes) {
+                core.warning(`Missing Versu release notes for ${tag} (module ${moduleId}); skipping release creation.`);
+                continue;
+              }
 
               await github.rest.repos.createRelease({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 tag_name: tag,
                 name: tag,
-                body: notes ? fs.readFileSync(notes.path, "utf8") : undefined,
-                generate_release_notes: !notes,
+                body: fs.readFileSync(notes.path, "utf8"),
+                generate_release_notes: false,
               });
             }
