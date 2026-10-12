@@ -44,7 +44,7 @@ jobs:
           node-version-file: .node-version
 
       - name: Install Node.js adapter
-        run: npm install --global @versu/plugin-node
+        run: npm install --global '@versu/plugin-node@^1.0.8'
 
       - name: Configure Git identity
         run: |

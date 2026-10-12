@@ -28,7 +28,7 @@ jobs:
           cache: npm
 
       - name: Install Versu Node Plugin
-        run: npm install --global @versu/plugin-node
+        run: npm install --global '@versu/plugin-node@^1.0.8'
 
       - name: Preview next release
         uses: versuhq/versu@v3
