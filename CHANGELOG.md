@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Next Version Placeholder -->
 
+## [1.1.1](https://github.com/tvcsantos/ai-pr-description/compare/v1.1.0...v1.1.1) - 2026-10-12
+
+### 📝 Documentation
+
+- Update documentation to use floating tag ([a0d372d](https://github.com/tvcsantos/ai-pr-description/commit/a0d372d78fa5e5fc79c637ac1a82f51ac229d80b))
+
 ## [1.1.0](https://github.com/tvcsantos/ai-pr-description/releases/tag/v1.1.0) - 2026-10-12
 
 ### ✨ Features
